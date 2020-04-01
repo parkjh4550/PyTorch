@@ -33,7 +33,7 @@ def eval_net(net, data_loader, device='cpu'):
     score = nn.functional.mse_loss(ypreds, ys).item()
     return score
 
-def train_net(net, train_loader, test_loader, optimizer=optim.Adam, loss_fn=nn.MSELoss(),n_iter=10, device='cpu'):
+def train_net(net, train_loader, test_loader, optimizer=optim.Adam, loss_fn=nn.MSELoss(),n_iter=1, device='cpu'):
     train_losses = []
     val_acc = []
     optim = optimizer(net.parameters())
@@ -84,6 +84,7 @@ def save_result_img(net, test_dataset, dst):
     #save iamges
     # [target, bilinear, prediction]
     # nrow = # of samples
+    yp = yp.to('cpu')
     save_image(torch.cat([y, bl_recon, yp], 0), dst , nrow=4)
 
 def path_check(p):
