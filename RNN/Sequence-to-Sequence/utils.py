@@ -198,6 +198,7 @@ def load_model(enc, dec, check_dir):
     max_epoch = max(epochs)
 
     # load prm
+    # enc_params = torch.load(dir, map_location='cpu')
     enc_params = torch.load(os.path.join(check_dir, 'enc_epoch_{}.prm'.format(max_epoch)))
     dec_params = torch.load(os.path.join(check_dir,'dec_epoch_{}.prm'.format(max_epoch)))
 
