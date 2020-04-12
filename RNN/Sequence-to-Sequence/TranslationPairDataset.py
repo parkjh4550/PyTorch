@@ -21,13 +21,17 @@ class TranslationPairDataset(Dataset):
         src = [p[0] for p in pairs]
         trg = [p[1] for p in pairs]
 
+        """
         # nested list -> list
         i_src = itertools.chain.from_iterable(src)
         i_trg = itertools.chain.from_iterable(trg)
 
         # build vocab
-        self.src_word_list, self.src_word_dict = build_vocab(i_src)     # 그냥 src로 하면은 src가 사라져버린다.. 왜?
+        self.src_word_list, self.src_word_dict = build_vocab(i_src)     
         self.trg_word_list, self.trg_word_dict = build_vocab(i_trg)
+        """
+        self.src_word_list, self.src_word_dict = build_vocab(itertools.chain.from_iterable(src))
+        self.trg_word_list, self.trg_word_dict = build_vocab(itertools.chain.from_iterable(trg))
 
         #word -> tensor
         self.src_data = [words2tensor(words, self.src_word_dict, max_len) for words in src]
