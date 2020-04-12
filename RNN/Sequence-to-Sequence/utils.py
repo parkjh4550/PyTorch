@@ -6,6 +6,7 @@ from torch import nn, optim
 
 import tqdm
 from statistics import mean
+import os
 # normalize
 # parse_line
 # build_vocab
@@ -184,3 +185,26 @@ def train_model(enc, dec, dataset, dataloader, optimizer=optim.Adam, loss_f =nn.
             torch.save(dec_param, './checkpoint/dec_epoch_{}.prm'.format(epoch+1), pickle_protocol=4)
 
             enc.to(device), dec.to(device)
+
+
+def load_model(enc, dec, check_dir):
+
+    # find maximum epoch
+    checkpoints = os.listdir(check_dir)
+    prefix_reg = re.compile("dec_epoch_|enc_epoch_")
+    epochs = []
+    for c in checkpoints:
+        epochs.append(int(prefix_reg.sub('',c)[:-4]))
+    max_epoch = max(epochs)
+
+    # load prm
+    enc_params = torch.load(os.path.join(check_dir, 'enc_epoch_{}.prm'.format(max_epoch)))
+    dec_params = torch.load(os.path.join(check_dir,'dec_epoch_{}.prm'.format(max_epoch)))
+
+    enc.load_state_dict(enc_params)
+    dec.load_state_dict(dec_params)
+
+    print('======successfully load epoch {} prm'.format(max_epoch))
+
+    #return loaded models
+    return enc, dec

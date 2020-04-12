@@ -5,8 +5,8 @@ from torch import nn, optim
 
 from model import Encoder, Decoder
 from TranslationPairDataset import TranslationPairDataset
-from utils import train_model
-
+from utils import train_model, load_model
+import os
 if __name__ == '__main__':
     #parameters
     batch_size = 64
@@ -22,6 +22,11 @@ if __name__ == '__main__':
     dec = Decoder(len(ds.trg_word_list), 100, 100, 2)
     optimizer = optim.Adam
     loss_f = nn.CrossEntropyLoss()
+
+    # checkpoint load
+    check_dir = './checkpoint'
+    if os.listdir(check_dir):
+        enc, dec = load_model(enc, dec, check_dir)
 
     #training
     train_model(enc, dec, ds, loader, optimizer=optimizer, loss_f=loss_f, n_epoch=30, device='cuda:0')
